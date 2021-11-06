@@ -1,1 +1,1 @@
-# -Appman-pokedex
+# Appman-pokedex
