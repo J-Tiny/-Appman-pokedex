@@ -18,25 +18,9 @@ const COLORS = {
 };
 
 const App = () => {
-  const [pokemonCardsList,setPokemonCardsList] = useState([])
-  useEffect(() => {
-    const PokemonCardsListURL = `http://localhost:3030/api/cards`;
-    const fetchPokemonCardsList = async() => {
-      try {
-        const response = await fetch(PokemonCardsListURL);
-        const data = await response.json();
-        setPokemonCardsList(data.cards)
-        console.log(pokemonCardsList)
-      } catch (error) {
-        console.log("error",error)
-      }
-    }
-    fetchPokemonCardsList()
-  },[])
   return (
     <div className="App">
-      <MyPokedex />
-      <PokemonCardsList pokemonCardsList={pokemonCardsList}/>
+      <MyPokedex/>
     </div>
   );
 };
