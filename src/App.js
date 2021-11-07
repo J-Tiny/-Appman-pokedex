@@ -1,8 +1,6 @@
 import "./App.css";
 import "./components/MyPokedex";
-import { useState,useEffect } from "react";
 import MyPokedex from "./components/MyPokedex";
-import PokemonCardsList from "./components/PokemonCardsList";
 const COLORS = {
   Psychic: "#f8a5c2",
   Fighting: "#f0932b",
