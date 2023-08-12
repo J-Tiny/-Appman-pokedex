@@ -2,6 +2,7 @@ import styled from "styled-components";
 import searchIcon from "../search.png";
 import LevelTube from "./LevelTube";
 import cute from "../cute.png";
+import React from 'react';
 import { useState, useEffect, useRef } from "react";
 const ModalOutside = styled.div`
   width: 100%;
@@ -128,6 +129,7 @@ const AddButton = styled.div`
   font-size: 25px;
   cursor: pointer;
 `;
+
 const PokemonCardsList = (props) => {
   const [pokemonCardsList, setPokemonCardsList] = useState([]);
   const [searchInput, setSearchInput] = useState("");
@@ -139,16 +141,24 @@ const PokemonCardsList = (props) => {
       const response = await fetch(PokemonCardsListURL);
       const data = await response.json();
       if(pokemonCardsList.length===0){
-        setPokemonCardsList(data.cards);
+        const ids = new Set(props.pokedex.map(({ id }) => id));
+        setPokemonCardsList(data.cards.filter(({ id }) => !ids.has(id)));
       }
     } catch (error) {
       console.log("error", error);
     }
   };
-  function handleRemove(id) {
-    const newPokemonCardsList = pokemonCardsList.filter((item) => item.id !== id);
-    setPokemonCardsList(newPokemonCardsList)
+
+  function removeObjectWithId(arr, id) {
+    const objWithIdIndex = arr.findIndex((obj) => obj.id === id);
+  
+    if (objWithIdIndex > -1) {
+      arr.splice(objWithIdIndex, 1);
+    }
+  
+    return arr;
   }
+
   const ref = useRef();
   const useOnClickOutside = (ref, handler) => {
     useEffect(() => {
@@ -168,11 +178,11 @@ const PokemonCardsList = (props) => {
   };
   useOnClickOutside(ref, () => props.setOpenCardsList(false));
   useEffect(() => {
-    fetchPokemonCardsList();
-  }, []);
+      fetchPokemonCardsList();
+  });
   useEffect(() => {
     if (searchInput !== "") {
-      const filteredPokemonCardsList = pokemonCardsList.filter(
+      const filtered = pokemonCardsList.filter(
         (pokemonCard) => {
           return (
             pokemonCard.name
@@ -182,11 +192,11 @@ const PokemonCardsList = (props) => {
           );
         }
       );
-      setFilteredPokemonCardsList(filteredPokemonCardsList);
+      setFilteredPokemonCardsList(filtered);
     } else {
       setPokemonCardsList(pokemonCardsList);
     }
-  }, [searchInput]);
+  }, [pokemonCardsList, searchInput]);
   return (
     <>
       {props.openCardsList ? (
@@ -204,11 +214,9 @@ const PokemonCardsList = (props) => {
               searchInput.length === 0
                 ? pokemonCardsList.map((pokemonCard,index) => {
                     let damage = 0;
-                    pokemonCard.attacks?.map((attack) => {
-                      damage += parseInt(attack.damage)
-                        ? parseInt(attack.damage)
-                        : 0;
-                    });
+                    for (let i = 0; i < pokemonCard.attacks; i++) {
+                      damage += parseInt(pokemonCard.attacks[i].damage)? parseInt(pokemonCard.attacks[i].damage): 0;
+                    }
                     let happiness = [];
                     let happinessLength = Math.round(
                       ((pokemonCard.hp === "None" ? 0 : pokemonCard.hp / 10) +
@@ -232,7 +240,7 @@ const PokemonCardsList = (props) => {
                         {id === pokemonCard.id ? (<AddButton
                             onClick={() => {
                               props.pokedex.push(pokemonCard);
-                              pokemonCardsList.splice(pokemonCard.id,1)
+                              removeObjectWithId(pokemonCardsList, pokemonCard.id)
                               setPokemonCardsList([...pokemonCardsList])
                             }}
                             key={pokemonCard.id}
@@ -290,11 +298,9 @@ const PokemonCardsList = (props) => {
               filteredPokemonCardsList.map((pokemonCard, index) => {
   
                 let damage = 0;
-                pokemonCard.attacks?.forEach((attack) => {
-                  damage += parseInt(attack.damage)
-                    ? parseInt(attack.damage)
-                    : 0;
-                });
+                for (let i = 0; i < pokemonCard.attacks; i++) {
+                  damage += parseInt(pokemonCard.attacks[i].damage)? parseInt(pokemonCard.attacks[i].damage): 0;
+                }
                 let happiness = [];
                 let happinessLength = Math.round(
                   ((pokemonCard.hp === "None" ? 0 : pokemonCard.hp / 10) +
@@ -318,9 +324,8 @@ const PokemonCardsList = (props) => {
                       <AddButton
                         onClick={() => {
                           props.setPokedex([...props.pokedex, pokemonCard]);
-                          handleRemove(pokemonCard.id)
-                          filteredPokemonCardsList.splice(index, 1);
-                          setFilteredPokemonCardsList([...filteredPokemonCardsList]);
+                          removeObjectWithId(pokemonCardsList, pokemonCard.id)
+                          setPokemonCardsList([...pokemonCardsList])
                         }}
                         key={pokemonCard.id}
                       >

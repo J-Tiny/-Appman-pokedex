@@ -3,6 +3,7 @@ import styled from "styled-components";
 import PokemonCardsList from "./PokemonCardsList";
 import cute from "../cute.png";
 import LevelTube from "./LevelTube";
+import React from 'react';
 const Header = styled.div`
   width: 100%;
   text-align: center;
@@ -158,18 +159,12 @@ const MyPokedex = (props) => {
 
       {pokedex.map((pokemonCard, index) => {
         let damage = 0;
-        pokemonCard.attacks?.map((attack) => {
-          damage += parseInt(attack.damage) ? parseInt(attack.damage) : 0;
-        });
+        for (let i = 0; i < pokemonCard.attacks; i++) {
+          damage += parseInt(pokemonCard.attacks[i].damage)? parseInt(pokemonCard.attacks[i].damage): 0;
+        }
         let happiness = [];
         let happinessLength = Math.round(
-          ((pokemonCard.hp === "None" ? 0 : pokemonCard.hp / 10) +
-            damage / 10 +
-            10 -
-            (pokemonCard.supertype === "Pokémon"
-              ? pokemonCard.weaknesses?.length
-              : 0)) /
-            5
+          ((pokemonCard.hp === "None" ? 0 : pokemonCard.hp / 10) +(damage / 10) + 10 - (pokemonCard.supertype === "Pokémon" ? pokemonCard.weaknesses?.length : 0)) / 5
         );
         for (let i = 0; i < happinessLength; i++) {
           happiness.push(<CuteImg src={cute} alt="cute" key={i} />);

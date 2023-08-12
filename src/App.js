@@ -1,6 +1,9 @@
-import "./App.css";
+import React, { Component } from 'react'
+import './App.css'
 import "./components/MyPokedex";
 import MyPokedex from "./components/MyPokedex";
+
+// eslint-disable-next-line no-unused-vars
 const COLORS = {
   Psychic: "#f8a5c2",
   Fighting: "#f0932b",
@@ -12,15 +15,17 @@ const COLORS = {
   Lightning: "#f9ca24",
   Darkness: "#574b90",
   Colorless: "#FFF",
-  Fire: "#eb4d4b",
-};
+  Fire: "#eb4d4b"
+}
 
-const App = () => {
-  return (
-    <div className="App">
-      <MyPokedex/>
-    </div>
-  );
-};
+class App extends Component {
+  render() {
+    return (
+      <div className="App">
+        <MyPokedex/>
+      </div>
+    )
+  }
+}
 
-export default App;
+export default App

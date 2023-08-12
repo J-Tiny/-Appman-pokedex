@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import React from 'react';
 const Container = styled.div`
   progress[value] {
     width: ${(props) => props.width};
